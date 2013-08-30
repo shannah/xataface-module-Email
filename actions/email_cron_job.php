@@ -161,10 +161,11 @@ class actions_email_cron_job {
 	 */
 	function mutex($name){
 		
-		$path = sys_get_temp_dir().'/'.$name.'.mutex';
+		$this->mutex = sys_get_temp_dir().'/'.$name.'.mutex';
 		//echo $path;
-		$this->mutex = fopen($path, 'w');
-		if ( flock($this->mutex, LOCK_EX | LOCK_NB) ){
+		//$this->mutex = fopen($path, 'w');
+		//if ( flock($this->mutex, LOCK_EX | LOCK_NB) ){
+		if ( @mkdir($this->mutex, 0777) ){
 			register_shutdown_function(array($this,'clear_mutex'));
 			return true;
 		} else {
@@ -179,7 +180,9 @@ class actions_email_cron_job {
 	function clear_mutex(){
 		
 		if ( $this->mutex ){
-			fclose($this->mutex);
+			//fclose($this->mutex);
+			@rmdir($this->mutex);
+			$this->mutex = null;
 		}
 	}
 	
