@@ -150,6 +150,19 @@ class actions_email_cron_job {
 	}
 	
 	
+	static function getMutexType(){
+		$app = Dataface_Application::getInstance();
+		$mutexType = 'mkdir';
+		$conf = @$app->_conf['mdoules_Email'];
+		if ( !$conf ){
+			return $mutexType;
+		}
+		if ( @$conf['mutex_type']){
+			$mutexType = $conf['mutex_type'];
+		}
+		return $mutexType;
+	}
+	
 	
 	/**
 	 * Obtain a mutex (to make sure we aren't running multiple instances
@@ -161,15 +174,23 @@ class actions_email_cron_job {
 	 */
 	function mutex($name){
 		
-		$this->mutex = sys_get_temp_dir().'/'.$name.'.mutex';
-		//echo $path;
-		//$this->mutex = fopen($path, 'w');
-		//if ( flock($this->mutex, LOCK_EX | LOCK_NB) ){
-		if ( @mkdir($this->mutex, 0777) ){
-			register_shutdown_function(array($this,'clear_mutex'));
-			return true;
+		$this->mutex = sys_get_temp_dir().'/'.basename($name).'.mutex';
+		$mt = self::getMutexType();
+		if ( $mt === 'flock' ){
+			$this->mutex = fopen($path, 'w');
+			if ( flock($this->mutex, LOCK_EX | LOCK_NB) ){
+				register_shutdown_function(array($this,'clear_mutex'));
+				return true;
+			} else {
+				return false;
+			}
 		} else {
-			return false;
+			if ( @mkdir($this->mutex, 0777) ){
+				register_shutdown_function(array($this,'clear_mutex'));
+				return true;
+			} else {
+				return false;
+			}
 		}
 		
 	}
@@ -180,8 +201,11 @@ class actions_email_cron_job {
 	function clear_mutex(){
 		
 		if ( $this->mutex ){
-			//fclose($this->mutex);
-			@rmdir($this->mutex);
+			if ( self::getMutexType() == 'flock' ){
+				fclose($this->mutex);
+			} else {
+				@rmdir($this->mutex);
+			}
 			$this->mutex = null;
 		}
 	}
