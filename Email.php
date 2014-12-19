@@ -56,6 +56,7 @@ class modules_Email {
 			);
 			df_register_skin('email', dirname(__FILE__).'/templates');
 			
+			
 		}
 		
 	}

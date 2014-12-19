@@ -29,6 +29,7 @@ class tables_xataface__email_templates {
 	}
 	
 	public function block__before_email_body_widget(){
+		Dataface_ModuleTool::getInstance()->loadModule('modules_ckeditor')->registerPaths();
 		Dataface_JavascriptTool::getInstance()->import('xataface/modules/ckeditor/plugins/SchemaBrowser.js');
 		Dataface_ModuleTool::getInstance()->loadModule('modules_Email')->addPaths();
 		Dataface_JavascriptTool::getInstance()->import('xataface/modules/Email/email_template_form.js');
