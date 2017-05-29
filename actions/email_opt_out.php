@@ -124,9 +124,9 @@ class actions_email_opt_out {
 	
 	function getEmailAddressFromId($emailId){
 		$res = df_q("select recipient_email from xataface__email_log where `uniqid`='".addslashes($emailId)."'");
-		if ( mysql_num_rows($res) == 0 ) return null;
-		list($addr) = mysql_fetch_row($res);
-		@mysql_free_result($res);
+		if ( xf_db_num_rows($res) == 0 ) return null;
+		list($addr) = xf_db_fetch_row($res);
+		@xf_db_free_result($res);
 		return $addr;
 		
 		
@@ -137,11 +137,11 @@ class actions_email_opt_out {
 		$addr = $this->getEmailAddressFromId($emailId);
 		
 		$res = df_q("select email from dataface__email_blacklist where `email`='".addslashes($addr)."' limit 1");
-		if ( mysql_num_rows($res) == 0 ){
-			@mysql_free_result($res);
+		if ( xf_db_num_rows($res) == 0 ){
+			@xf_db_free_result($res);
 			return false;
 		} else {
-			@mysql_free_result($res);
+			@xf_db_free_result($res);
 			return true;
 		}
 	

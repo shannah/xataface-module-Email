@@ -25,7 +25,7 @@ class actions_email_cron_job {
 		
 			case self::JOB_IN_PROGRESS:
 				$res2 = df_q("select * from xataface__email_jobs where job_id='".addslashes($query['--job-id'])."'");
-				$row = mysql_fetch_assoc($res2);
+				$row = xf_db_fetch_assoc($res2);
 				if ( !$row ){
 					// No progress listed
 					throw new Exception("The job could not be found", self::JOB_NOT_FOUND);
@@ -42,7 +42,7 @@ class actions_email_cron_job {
 				
 			case self::JOB_COMPLETE:
 				$res2 = df_q("select * from xataface__email_jobs where job_id='".addslashes($query['--job-id'])."'");
-				$row = mysql_fetch_assoc($res2);
+				$row = xf_db_fetch_assoc($res2);
 				if ( !$row ){
 					// No progress listed
 					throw new Exception("The job could not be found", self::JOB_NOT_FOUND);
@@ -60,7 +60,7 @@ class actions_email_cron_job {
 				
 			case self::JOB_CANCELLED:
 				$res2 = df_q("select * from xataface__email_jobs where job_id='".addslashes($query['--job-id'])."'");
-				$row = mysql_fetch_assoc($res2);
+				$row = xf_db_fetch_assoc($res2);
 				if ( !$row ){
 					// No progress listed
 					throw new Exception("The job could not be found", self::JOB_NOT_FOUND);
@@ -100,7 +100,7 @@ class actions_email_cron_job {
 		
 		$res = df_q("select * from xataface__email_jobs where job_id='".addslashes($jobId)."'");
 		
-		$row = mysql_fetch_assoc($res);
+		$row = xf_db_fetch_assoc($res);
 		if ( !$row ){
 			return self::JOB_NOT_FOUND;		
 		}
@@ -114,27 +114,27 @@ class actions_email_cron_job {
 		}
 		
 		//echo "\nSending mail for job $row[job_id] ...";
-		$res2 = mysql_query("delete from `".$row['join_table']."` where recipient_email='' and messageid='".addslashes($row['email_id'])."'", df_db());
+		$res2 = xf_db_query("delete from `".$row['join_table']."` where recipient_email='' and messageid='".addslashes($row['email_id'])."'", df_db());
 		$action->sendMail($row['email_id'],$row['email_table'],$row['join_table'],$row['recipients_table'],$row['email_column']);		
 		
 		// check to see if all the messages for this job have been sent yet
-		$res2 = mysql_query("select count(*) from `".$row['join_table']."` where sent<>1 and messageid='".addslashes($row['email_id'])."'", df_db());
-		if ( !$res2 ) trigger_error(mysql_error(df_db()), E_USER_ERROR);
-		list($num)=mysql_fetch_row($res2);
-		@mysql_free_result($res2);
+		$res2 = xf_db_query("select count(*) from `".$row['join_table']."` where sent<>1 and messageid='".addslashes($row['email_id'])."'", df_db());
+		if ( !$res2 ) trigger_error(xf_db_error(df_db()), E_USER_ERROR);
+		list($num)=xf_db_fetch_row($res2);
+		@xf_db_free_result($res2);
 		if ( $num==0 ){
 		
 			$res2 = df_q("update xataface__email_jobs set active=0, complete=1, end_time='".addslashes(time())."' where job_id='".addslashes($jobId)."'", df_db());
 			
 			return self::JOB_COMPLETE;
 			//echo "\nJob $row[job_id] is complete!  Deleting job...";
-			//$res2 = mysql_query("delete from dataface__email_jobs where job_id='".addslashes($row['job_id'])."' limit 1", df_db());
-			//if ( !$res2 ) trigger_error(mysql_error(df_db()), E_USER_ERROR);
+			//$res2 = xf_db_query("delete from dataface__email_jobs where job_id='".addslashes($row['job_id'])."' limit 1", df_db());
+			//if ( !$res2 ) trigger_error(xf_db_error(df_db()), E_USER_ERROR);
 		} else {
 			//echo "\nAfter sending mail for job $row[job_id], there are still $num messages left to send.";
 			$res = df_q("select * from xataface__email_jobs where job_id='".addslashes($jobId)."'");
 		
-			$row = mysql_fetch_assoc($res);
+			$row = xf_db_fetch_assoc($res);
 			if ( !$row ){
 				return self::JOB_NOT_FOUND;		
 			}

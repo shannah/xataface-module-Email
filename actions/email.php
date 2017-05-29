@@ -158,7 +158,7 @@ class actions_email {
 			$sres = df_q($sql);
 			
 			
-			//if ( !$sres ) trigger_error(mysql_error(df_db()), E_USER_ERROR);
+			//if ( !$sres ) trigger_error(xf_db_error(df_db()), E_USER_ERROR);
 			$jobId = $this->postJob($form->_record->val('id'), $this->emailTable, $this->joinTable, $this->recipientsTable, $this->emailColumn);
 			$q2['-action'] = 'email_progress';
 			$q2['-job-id'] = $jobId;
@@ -203,21 +203,21 @@ class actions_email {
 			}
 		}
 		if ( !Dataface_Table::tableExists('dataface__email_blacklist') ) $this->createEmailTables(null,null);
-		$res = mysql_query("select email from dataface__email_blacklist where email='".addslashes($email)."' limit 1", df_db());
-		if ( !$res ) trigger_error(mysql_error(df_db()), E_USER_ERROR);
-		list($num) = mysql_fetch_row($res);
-		@mysql_free_result($res);
+		$res = xf_db_query("select email from dataface__email_blacklist where email='".addslashes($email)."' limit 1", df_db());
+		if ( !$res ) trigger_error(xf_db_error(df_db()), E_USER_ERROR);
+		list($num) = xf_db_fetch_row($res);
+		@xf_db_free_result($res);
 		return $num;
 	}
 	
 	function getBlackListed($emails){
 		if ( !Dataface_Table::tableExists('dataface__email_blacklist') ) $this->createEmailTables(null,null);
 		if ( !is_array($emails) ) $emails = array($emails);
-		$res = mysql_query("select email from dataface__email_blacklist where email in ('".implode("','", array_map('addslashes',$emails))."')", df_db());
+		$res = xf_db_query("select email from dataface__email_blacklist where email in ('".implode("','", array_map('addslashes',$emails))."')", df_db());
 		$out = array();
-		if (!$res ) trigger_error(mysql_error(df_db()), E_USER_ERROR);
-		while ($row = mysql_fetch_row($res) ) $out[] = $row[0];
-		@mysql_free_result($res);
+		if (!$res ) trigger_error(xf_db_error(df_db()), E_USER_ERROR);
+		while ($row = xf_db_fetch_row($res) ) $out[] = $row[0];
+		@xf_db_free_result($res);
 		return $out;
 	}
 	
@@ -263,8 +263,8 @@ class actions_email {
 			)";
 		
 		foreach ($sql as $q ){
-			$res = mysql_query($q, $app->db());
-			if ( !$res ) trigger_error(mysql_error($app->db()), E_USER_ERROR);
+			$res = xf_db_query($q, $app->db());
+			if ( !$res ) trigger_error(xf_db_error($app->db()), E_USER_ERROR);
 		}
 		
 		try {
@@ -306,7 +306,7 @@ class actions_email {
 			return array();
 		}
 		
-		while ($row = mysql_fetch_row($res) ){
+		while ($row = xf_db_fetch_row($res) ){
 			
 			$fileName = basename($row[0]);
 			$filePath = $savepath . DIRECTORY_SEPARATOR. $fileName;
@@ -319,7 +319,7 @@ class actions_email {
 			$attachment = MIME::message($contents, $mimetype, $fileName, 'ISO-8859-1', 'base64', 'attachment');
 			$out[] = $attachment;
 		}
-		@mysql_free_result($res);
+		@xf_db_free_result($res);
 		return $out;
 	}
 	
@@ -400,11 +400,11 @@ class actions_email {
 		if ( !$email) return PEAR::raiseError("Failed to send email because no message with id {$emailId} could be found.", DATAFACE_E_ERROR);
 		
 		$jres = df_q("select job_id from xataface__email_jobs where email_id='".addslashes($emailId)."'");
-		if ( mysql_num_rows($jres) == 0 ){
+		if ( xf_db_num_rows($jres) == 0 ){
 			throw new Exception("Could not find job associated with email.");
 		}
-		list($jobId) = mysql_fetch_row($jres);
-		@mysql_free_result($jres);
+		list($jobId) = xf_db_fetch_row($jres);
+		@xf_db_free_result($jres);
 		
 		$template = null;
 		if ( $email->val('template_id') ){
@@ -422,11 +422,11 @@ class actions_email {
 			
 			// Check to make sure that job hasn't been cancelled.
 			$jres = df_q("select cancelled from xataface__email_jobs where job_id='".addslashes($jobId)."'");
-			if ( mysql_num_rows($jres) == 0 ){
+			if ( xf_db_num_rows($jres) == 0 ){
 				throw new Exception("Could not find job record.  Must have been cancelled.");
 			}
-			list($cancelled) = mysql_fetch_row($jres);
-			@mysql_free_result($res);
+			list($cancelled) = xf_db_fetch_row($jres);
+			@xf_db_free_result($res);
 			if ( $cancelled ){
 				return false;
 			}
@@ -642,7 +642,7 @@ END;
 	function postJob($emailId, $emailTable=null, $joinTable = null, $recipientsTable = null , $emailColumn = null){
 
 		$res = df_q("select count(*) from `$joinTable` where messageid='".addslashes($emailId)."'");
-		list($count) = mysql_fetch_row($res);
+		list($count) = xf_db_fetch_row($res);
 		//echo "Posting job to join table: $joinTable with count ".$count;exit;
 		
 		$res = df_q(
@@ -666,7 +666,7 @@ END;
 				'".addslashes($count)."',
 				'".time()."'
 				)");
-		return mysql_insert_id(df_db());
+		return xf_db_insert_id(df_db());
 		
 		
 	}

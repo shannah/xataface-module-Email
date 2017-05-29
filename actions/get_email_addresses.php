@@ -26,12 +26,12 @@ class actions_get_email_addresses {
 		$qb = new Dataface_QueryBuilder($query['-table'], $query);
 		$sql = "select distinct (`".$col."`) `".$col."` ".$qb->_from().$qb->_secure($qb->_where());
 		
-		$res = mysql_query($sql, df_db());
-		if ( !$res ) trigger_error(mysql_error(df_db()), E_USER_ERROR);
+		$res = xf_db_query($sql, df_db());
+		if ( !$res ) trigger_error(xf_db_error(df_db()), E_USER_ERROR);
 		
 		$addresses = array();
-		while ($row = mysql_fetch_row($res) ) $addresses[] = $row[0];
-		@mysql_free_result($res);
+		while ($row = xf_db_fetch_row($res) ) $addresses[] = $row[0];
+		@xf_db_free_result($res);
 		header("Content-type: text/plain");
 		echo implode(', ', $addresses);
 		exit;
