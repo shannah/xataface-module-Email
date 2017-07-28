@@ -1,10 +1,76 @@
 {
-  "author": "Steve Hannah",
+  "_args": [
+    [
+      {
+        "raw": "xataface-module-email",
+        "scope": null,
+        "escapedName": "xataface-module-email",
+        "name": "xataface-module-email",
+        "rawSpec": "",
+        "spec": "latest",
+        "type": "tag"
+      },
+      "/Applications/XAMPP/xamppfiles/htdocs/email_demo/tmp"
+    ]
+  ],
+  "_from": "xataface-module-email@latest",
+  "_id": "xataface-module-email@0.3.2",
+  "_inCache": true,
+  "_location": "/xataface-module-email",
+  "_nodeVersion": "4.2.2",
+  "_npmOperationalInternal": {
+    "host": "s3://npm-registry-packages",
+    "tmp": "tmp/xataface-module-email-0.3.2.tgz_1498258736738_0.3807223718613386"
+  },
+  "_npmUser": {
+    "name": "shannah78",
+    "email": "steve@weblite.ca"
+  },
+  "_npmVersion": "3.10.5",
+  "_phantomChildren": {},
+  "_requested": {
+    "raw": "xataface-module-email",
+    "scope": null,
+    "escapedName": "xataface-module-email",
+    "name": "xataface-module-email",
+    "rawSpec": "",
+    "spec": "latest",
+    "type": "tag"
+  },
+  "_requiredBy": [
+    "#USER"
+  ],
+  "_resolved": "https://registry.npmjs.org/xataface-module-email/-/xataface-module-email-0.3.2.tgz",
+  "_shasum": "3af095892b18231afd7f43b033d0d2893060011c",
+  "_shrinkwrap": null,
+  "_spec": "xataface-module-email",
+  "_where": "/Applications/XAMPP/xamppfiles/htdocs/email_demo/tmp",
+  "author": {
+    "name": "Steve Hannah"
+  },
+  "dependencies": {},
   "description": "Email module for Xataface apps",
-  "main": "index.js",
-  "repository": "",
-  "version": "0.3.2",
+  "devDependencies": {},
+  "directories": {},
+  "dist": {
+    "shasum": "3af095892b18231afd7f43b033d0d2893060011c",
+    "tarball": "https://registry.npmjs.org/xataface-module-email/-/xataface-module-email-0.3.2.tgz"
+  },
+  "gitHead": "c9e0dd5ad166d092bbfa173413490dfbff3b3f29",
   "license": "ISC",
+  "main": "index.js",
+  "maintainers": [
+    {
+      "name": "shannah78",
+      "email": "steve@weblite.ca"
+    }
+  ],
   "name": "xataface-module-email",
-  "scripts": {"test": "echo \"Error: no test specified\" && exit 1"}
+  "optionalDependencies": {},
+  "readme": "ERROR: No README data found!",
+  "repository": "",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "version": "0.3.3"
 }
