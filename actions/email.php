@@ -267,7 +267,7 @@ class actions_email {
 			if ( !$res ) trigger_error(xf_db_error($app->db()), E_USER_ERROR);
 		}
 
-		if (isset($join_table)) {}
+		if (isset($join_table)) {
 			try {
 				// The comment field was added in version 2.0... adding it now
 				// just in case there was a legacy table that we are adding to.
